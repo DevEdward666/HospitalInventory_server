@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>155065ef-68ce-49f2-8109-dcafef320dde</UserSecretsId>
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+    <NoWarn>NU1605</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
