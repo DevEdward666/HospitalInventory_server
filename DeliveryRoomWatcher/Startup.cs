@@ -26,17 +26,6 @@ namespace DeliveryRoomWatcher
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor |
-                    ForwardedHeaders.XForwardedProto;
-
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-            });
-
-            services.AddHttpsRedirection(opt => opt.HttpsPort = 443);
             //services.AddCors(options =>
             //{
             //    options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -64,7 +53,7 @@ namespace DeliveryRoomWatcher
             app.UseCors(builder => builder
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .SetIsOriginAllowed((host) => true)
+                  .SetIsOriginAllowed(origin => true)
                   .AllowCredentials()
               );
 
@@ -104,10 +93,11 @@ namespace DeliveryRoomWatcher
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<MessageHub>("/message");
-                endpoints.MapHub<NotifyHub>("/notify");
+                endpoints.MapHub<MessageHub>("message");
+                endpoints.MapHub<NotifyHub>("notify");
                 endpoints.MapControllers();
             });
+
 
         }
 

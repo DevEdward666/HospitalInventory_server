@@ -175,6 +175,14 @@ namespace DeliveryRoomWatcher.Controllers
             return Ok(_user.getUserPerrmission(username));
         }
       
+          [HttpPost]
+        [Route("api/user/getUserPerrmissionCancel")]
+        public ActionResult getUserPerrmissionCancel(PGetUsername username)
+        {
+            
+            return Ok(_user.getUserPerrmissionCancel(username));
+        }
+      
          
         [HttpPost]
         [Route("api/user/getUsernameExist")]

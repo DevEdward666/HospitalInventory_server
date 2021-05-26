@@ -187,8 +187,8 @@ namespace DeliveryRoomWatcher.Repositories
                     try
                     {
 
-                        var data = con.Query(
-                                        $@"SELECT DISTINCT up.logid FROM usermaster u  JOIN userpermission up ON up.`username`=u.`username` JOIN usermodule um ON um.`modid`=up.`modid` JOIN empmast emp ON emp.`idno`=u.`empidno` JOIN department dp ON dp.deptcode = emp.deptcode  where u.username = @username
+                        var data = con.QuerySingle(
+                                        $@"SELECT DISTINCT up.logid,up.modid FROM usermaster u  JOIN userpermission up ON up.`username`=u.`username` JOIN usermodule um ON um.`modid`=up.`modid` JOIN empmast emp ON emp.`idno`=u.`empidno` JOIN department dp ON dp.deptcode = emp.deptcode  WHERE u.username = @username AND up.modid='invservices' AND up.logid='approve'
                                         ",
                           username, transaction: tran
                             );
@@ -212,7 +212,41 @@ namespace DeliveryRoomWatcher.Repositories
             }
 
         }
+        public ResponseModel getUserPerrmissionCancel(PGetUsername username)
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    try
+                    {
 
+                        var data = con.QuerySingle(
+                                        $@"SELECT DISTINCT up.logid,up.modid FROM usermaster u  JOIN userpermission up ON up.`username`=u.`username` JOIN usermodule um ON um.`modid`=up.`modid` JOIN empmast emp ON emp.`idno`=u.`empidno` JOIN department dp ON dp.deptcode = emp.deptcode  WHERE u.username = @username AND up.modid='invservices' AND up.logid='cancel'
+                                        ",
+                          username, transaction: tran
+                            );
+
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
+
+                }
+            }
+
+        }
         public ResponseModel getUsernameExist(PGetUsername username)
         {
             using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))

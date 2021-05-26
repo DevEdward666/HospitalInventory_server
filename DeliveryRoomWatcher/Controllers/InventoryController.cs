@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryRoomWatcher.Hubs;
 using DeliveryRoomWatcher.Models;
 using DeliveryRoomWatcher.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json.Linq;
 
 namespace DeliveryRoomWatcher.Controllers
@@ -14,7 +17,18 @@ namespace DeliveryRoomWatcher.Controllers
     public class InventoryController : ControllerBase
     {
         InventoryRepo _inventory = new InventoryRepo();
-
+        protected readonly IHubContext<NotifyHub> _notifyhub;
+        public InventoryController([NotNull] IHubContext<NotifyHub> notifyhub)
+        {
+            _notifyhub = notifyhub;
+        }
+        [HttpPost]
+        [Route("api/inventory/notification")]
+        public async Task<IActionResult> SendMessage(mdlNotifications.NotificationPost notificationPost)
+        {
+            await _notifyhub.Clients.All.SendAsync("notifytoreact", notificationPost);
+            return Ok();
+        }
         [HttpPost]
         [Route("api/inventory/InsertNewRequest")]
         public ActionResult InsertNewRequest(mdlRequestHeader requests)

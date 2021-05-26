@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace DeliveryRoomWatcher.Controllers.SignalR
 {
-    [Route("api/notification")]
     [ApiController]
     public class NotificationController : ControllerBase
     {
@@ -22,6 +21,7 @@ namespace DeliveryRoomWatcher.Controllers.SignalR
             _notifyhub = notifyhub;
         }
         [HttpPost]
+        [Route("api/notification")]
         public async Task<IActionResult> SendMessage(mdlNotifications.NotificationPost notificationPost)
         {
             await _notifyhub.Clients.All.SendAsync("notifytoreact", notificationPost);

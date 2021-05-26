@@ -373,16 +373,16 @@ namespace DeliveryRoomWatcher.Repositories
                 {
                     try
                     {
-                        string reqno = con.QuerySingle<string>($@"select max(reqno) +1 transno from requestsum", null, transaction: tran);
-
-                        requests.reqno = reqno;
+                     
                         string sql_insert_request_header = $@"INSERT INTO requestsum SET reqno=@reqno ,deptcode=@deptcode,sectioncode='',reqdate=NOW(),reqby=@reqby,apprbycode=NULL,
                         apprbyname=NULL,apprdate=NULL,todept=@todept,tosection='',issueno=NULL,reqtype='O',reqstatus='O',trantype='T',
                         headapprovebycode=NULL,headapprovebyname=NULL,headdateapprove=NULL,cancelledbycode=NULL,cancelledbyname=NULL,
                         datecancelled=NULL,reqremarks=@reqremarks,encodedby='pgh',dateencoded=NOW(),tsreference=NOW()";
                         int insert_user_information = con.Execute(sql_insert_request_header, requests, transaction: tran);
+                        string reqno = con.QuerySingle<string>($@"SELECT MAX(reqno) reqno FROM requestsum", null, transaction: tran);
 
-                            if (insert_user_information > 0)
+                        requests.reqno = reqno;
+                        if (insert_user_information > 0)
                             {
                             int i = requests.lisrequesttdtls.Count;
 
@@ -578,7 +578,7 @@ namespace DeliveryRoomWatcher.Repositories
                     try
                     {
 
-                        var data = con.Query($@" SELECT reqno,todept,reqby,CASE WHEN issueno IS NOT NULL THEN 'Issued'  WHEN apprbycode IS NOT NULL AND cancelledbycode IS NULL  THEN 'Approved' WHEN cancelledbycode IS NOT NULL THEN 'Cancelled' ELSE 'For Approval' END reqstatus,reqremarks from requestsum WHERE reqno=@reqno",
+                        var data = con.Query($@"SELECT reqno,todept,reqby,CASE WHEN issueno IS NOT NULL THEN 'Issued'  WHEN apprbycode IS NOT NULL AND cancelledbycode IS NULL  THEN 'Approved' WHEN cancelledbycode IS NOT NULL THEN 'Cancelled' ELSE 'For Approval' END reqstatus,reqremarks from requestsum WHERE reqno=@reqno",
                            singleRequest,transaction: tran
                             );
 
