@@ -71,8 +71,8 @@ C:\Users\TUO-Edward\source\repos\DeliveryRoomWatcher\DeliveryRoomWatcher\obj\Rel
 C:\Users\TUO-Edward\source\repos\DeliveryRoomWatcher\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.pdb
 C:\Users\TUO-Edward\source\repos\DeliveryRoomWatcher\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.genruntimeconfig.cache
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\appsettings.Development.json
-E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\Properties\launchSettings.json
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\appsettings.json
+E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\Properties\launchSettings.json
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\DeliveryRoomWatcher.exe
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\DeliveryRoomWatcher.deps.json
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\DeliveryRoomWatcher.runtimeconfig.json
@@ -130,9 +130,6 @@ E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\runtimes\win\
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.csprojAssemblyReference.cache
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.AssemblyInfoInputs.cache
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.AssemblyInfo.cs
-E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.csproj.CoreCompileInputs.cache
-E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.MvcApplicationPartsAssemblyInfo.cs
-E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.MvcApplicationPartsAssemblyInfo.cache
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.RazorTargetAssemblyInfo.cache
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.csproj.CopyComplete
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\staticwebassets\DeliveryRoomWatcher.StaticWebAssets.Manifest.cache
@@ -140,3 +137,7 @@ E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\staticwebasse
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.dll
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.pdb
 E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.genruntimeconfig.cache
+E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.csproj.CoreCompileInputs.cache
+E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.MvcApplicationPartsAssemblyInfo.cs
+E:\HospitalInventory\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.MvcApplicationPartsAssemblyInfo.cache
+E:\HospitalInventory\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\web.config

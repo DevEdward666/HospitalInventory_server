@@ -3,6 +3,7 @@ using DeliveryRoomWatcher.Hubs;
 using DeliveryRoomWatcher.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -25,6 +26,17 @@ namespace DeliveryRoomWatcher
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedProto;
+
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
+
+            services.AddHttpsRedirection(opt => opt.HttpsPort = 443);
             //services.AddCors(options =>
             //{
             //    options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -44,6 +56,11 @@ namespace DeliveryRoomWatcher
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                
+                app.UseHsts();
+            }
             app.UseCors(builder => builder
                   .AllowAnyHeader()
                   .AllowAnyMethod()
@@ -52,17 +69,17 @@ namespace DeliveryRoomWatcher
               );
 
 
-            var swaggerConfig = new SwaggerConfig();
-            Configuration.GetSection(nameof(SwaggerConfig)).Bind(swaggerConfig);
-            app.UseSwagger(option =>
-            {
-                option.RouteTemplate = swaggerConfig.JsonRoute;
-            });
+            //var swaggerConfig = new SwaggerConfig();
+            //Configuration.GetSection(nameof(SwaggerConfig)).Bind(swaggerConfig);
+            //app.UseSwagger(option =>
+            //{
+            //    option.RouteTemplate = swaggerConfig.JsonRoute;
+            //});
 
-            app.UseSwaggerUI(option =>
-            {
-                option.SwaggerEndpoint(swaggerConfig.UIEndpoint, swaggerConfig.Description);
-            });
+            //app.UseSwaggerUI(option =>
+            //{
+            //    option.SwaggerEndpoint(swaggerConfig.UIEndpoint, swaggerConfig.Description);
+            //});
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Resources/Images")),
