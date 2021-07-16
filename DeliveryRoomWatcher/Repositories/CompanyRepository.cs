@@ -10,7 +10,38 @@ namespace DeliveryRoomWatcher.Repositories
     public class CompanyRepository
     {
         DatabaseConfig dbConfig = new DatabaseConfig();
+        public ResponseModel hospitalLogo()
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        string logo = Convert.ToBase64String(con.QuerySingle<byte[]>($@"
+                                        SELECT hosplogo  FROM hospitallogo WHERE hospcode = GetDefaultValue('hospinitial')
+                                        "
+                                         , null, transaction: tran));
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = logo
+                        };
+                    }
+                }
 
+            }
+            catch (Exception err)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = err.Message
+                };
+            }
+        }
         public ResponseModel CompanyLogo()
         {
             using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
@@ -18,14 +49,24 @@ namespace DeliveryRoomWatcher.Repositories
                 con.Open();
                 using (var tran = con.BeginTransaction())
                 {
-                    byte[] bytes = con.QuerySingleOrDefault<byte[]>(
-                        $@"SELECT hosplogo AS 'logo' FROM hospitallogo WHERE hospcode = GetDefaultValue('hospinitial')",
+                    try { 
+                    byte[] bytes = con.QuerySingle<byte[]>(
+                        $@"SELECT hosplogo AS 'logo' FROM hospitallogo WHERE hospcode = GetDefaultValues('hospinitial')",
                                 null, transaction: tran);
                     return new ResponseModel
                     {
                         success = true,
                         data = "data:image/jpg;base64," + Convert.ToBase64String(bytes)
                     };
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
                 }
             }
         }
@@ -37,14 +78,24 @@ namespace DeliveryRoomWatcher.Repositories
                 con.Open();
                 using (var tran = con.BeginTransaction())
                 {
-                    string hospitalName = con.QuerySingleOrDefault<string>(
-                        $@"SELECT `GetDefaultValue`('HOSPNAME') AS 'hosp_name'",
+                    try {
+                    string hospitalName = con.QuerySingle<string>(
+                        $@"SELECT `GetDefaultValues`('HOSPNAME') AS 'hosp_name'",
                                 null, transaction: tran);
                     return new ResponseModel
                     {
                         success = true,
                         data = hospitalName
                     };
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
                 }
             }
         }
@@ -56,7 +107,11 @@ namespace DeliveryRoomWatcher.Repositories
                 con.Open();
                 using (var tran = con.BeginTransaction())
                 {
-                    string tagLine = con.QuerySingleOrDefault<string>(
+                    try
+                    {
+
+                    
+                    string tagLine = con.QuerySingle<string>(
                         $@"SELECT `GetDefaultValue`('HOSPITALTAGLINE') AS 'hosp_tagline'",
                                 null, transaction: tran);
                     return new ResponseModel
@@ -64,6 +119,15 @@ namespace DeliveryRoomWatcher.Repositories
                         success = true,
                         data = tagLine
                     };
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
                 }
             }
         }

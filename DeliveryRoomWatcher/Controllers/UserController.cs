@@ -199,10 +199,19 @@ namespace DeliveryRoomWatcher.Controllers
           
             return Ok(_user.InserNewUser(adduser));
         }
-      
-     
 
-     
+
+        [HttpGet]
+        [Route("api/start")]
+        public ActionResult start()
+        {
+          
+
+            return Ok("The server has started successfully");
+        }
+
+
+
 
         [Route("api/user/getimage")]
         [HttpPost]

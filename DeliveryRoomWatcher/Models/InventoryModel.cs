@@ -22,5 +22,10 @@ namespace DeliveryRoomWatcher.Models
             public string id { get; set; }
             public string status { get; set; }
         }
+        public class searchitems
+        {
+            public string search { get; set; }
+            public string classcode { get; set; }
+        }
     }
 }

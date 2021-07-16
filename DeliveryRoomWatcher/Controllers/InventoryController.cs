@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DeliveryRoomWatcher.Hubs;
 using DeliveryRoomWatcher.Models;
+using DeliveryRoomWatcher.Parameters;
 using DeliveryRoomWatcher.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,12 @@ namespace DeliveryRoomWatcher.Controllers
         {
             await _notifyhub.Clients.All.SendAsync("notifytoreact", notificationPost);
             return Ok();
+        }
+        [HttpPost]
+        [Route("api/inventory/getPRPdf")]
+        public IActionResult getPRPdf(MDefaultValue payload)
+        {
+            return Ok(_inventory.getPRPdf(payload.value));
         }
         [HttpPost]
         [Route("api/inventory/InsertNewRequest")]
@@ -58,13 +65,19 @@ namespace DeliveryRoomWatcher.Controllers
         public ActionResult getdepartmentList()
         {
             return Ok(_inventory.getdepartmentList());
+        }      
+        [HttpPost]
+        [Route("api/inventory/getstockclass")]
+        public ActionResult getstockclass()
+        {
+            return Ok(_inventory.getstockclass());
         }
 
         [HttpPost]
         [Route("api/inventory/getinventoryitem")]
-        public ActionResult getinventoryitem()
+        public ActionResult getinventoryitem(InventoryModel.searchitems search)
         {
-            return Ok(_inventory.getinventoryitem());
+            return Ok(_inventory.getinventoryitem(search));
         }
 
 
@@ -106,9 +119,9 @@ namespace DeliveryRoomWatcher.Controllers
 
         [HttpPost]
         [Route("api/inventory/getnoninventoryitem")]
-        public ActionResult getnoninventoryitem()
+        public ActionResult getnoninventoryitem(PDefaultParams value)
         {
-            return Ok(_inventory.getnoninventoryitem());
+            return Ok(_inventory.getnoninventoryitem(value.value));
         }  
         [HttpPost]
         [Route("api/inventory/getsinglerequestheader")]

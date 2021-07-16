@@ -13,11 +13,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.5" />
     <PackageReference Include="MySql.Data" Version="8.0.22" />
+    <PackageReference Include="Select.HtmlToPdf" Version="21.1.0" />
+    <PackageReference Include="Select.HtmlToPdf.NetCore" Version="21.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hooks\" />
     <Folder Include="Attributes\" />
     <Folder Include="Resources\" />
     <Folder Include="Uploads\" />

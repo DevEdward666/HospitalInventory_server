@@ -36,18 +36,22 @@ namespace DeliveryRoomWatcher
             //services.AddCors();
             services.InstallServicesInAssembly(Configuration);
             services.AddSignalR();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(builder => builder
+
+            app.UseHttpsRedirection();
+            app.UseCors(builder => builder.WithOrigins("http://localhost:5000")
+              .SetIsOriginAllowed(origin => true)
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .SetIsOriginAllowed(origin => true)
                   .AllowCredentials()
               );
 
@@ -81,15 +85,18 @@ namespace DeliveryRoomWatcher
                 RequestPath = "/Resources/Events"
 
             });
-            app.UseHttpsRedirection();
+     
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseWebSockets();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<MessageHub>("message");
-                endpoints.MapHub<NotifyHub>("notify");
+             
                 endpoints.MapControllers();
+                endpoints.MapHub<MessageHub>("api/message/message");
+                endpoints.MapHub<NotifyHub>("api/notif/notify");
             });
 
 

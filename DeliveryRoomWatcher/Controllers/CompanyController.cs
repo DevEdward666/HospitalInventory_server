@@ -9,21 +9,21 @@ namespace DeliveryRoomWatcher.Controllers
         CompanyRepository _company = new CompanyRepository();
 
         [HttpPost]
-        [Route("api/company/company-name")]
+        [Route("api/company/companyname")]
         public ActionResult companyName()
         {
             return Ok(_company.CompanyName());
         }
 
         [HttpPost]
-        [Route("api/company/company-logo")]
+        [Route("api/company/companylogo")]
         public ActionResult companyLogo()
         {
             return Ok(_company.CompanyLogo());
         }
 
         [HttpPost]
-        [Route("api/company/company-tagline")]
+        [Route("api/company/companytagline")]
         public ActionResult companyTagline()
         {
             return Ok(_company.CompanyTagLine());

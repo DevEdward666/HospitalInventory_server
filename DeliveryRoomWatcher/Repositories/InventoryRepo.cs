@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DeliveryRoomWatcher.Config;
+using DeliveryRoomWatcher.Hooks;
 using DeliveryRoomWatcher.Models;
 using DeliveryRoomWatcher.Models.Common;
 using MySql.Data.MySqlClient;
@@ -13,6 +14,7 @@ namespace DeliveryRoomWatcher.Repositories
 {
     public class InventoryRepo
     {
+        CompanyRepository _company = new CompanyRepository();
         public ResponseModel getlistofrequest(InventoryModel.listofrequest listofrequest)
         {
             using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
@@ -265,7 +267,7 @@ namespace DeliveryRoomWatcher.Repositories
             }
 
         }  
-        public ResponseModel getnoninventoryitem()
+        public ResponseModel getnoninventoryitem(string classcode)
         {
             using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
             {
@@ -275,7 +277,40 @@ namespace DeliveryRoomWatcher.Repositories
                     try
                     {
 
-                        var data = con.Query($@"SELECT inv.stockcode,inv.stockdesc,inv.packdesc,inv.unitdesc FROM invmaster inv WHERE inv.invitem='N'",
+                        var data = con.Query($@"SELECT inv.stockcode,inv.stockdesc,inv.packdesc,inv.unitdesc,  inv.averagecost  FROM invmaster inv JOIN stockclass stc ON inv.stocktag=stc.classcode WHERE stc.classcode=@classcode"
+                          ,new { classcode } ,transaction: tran
+                            );
+
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
+
+                }
+            }
+
+        }
+        public ResponseModel getstockclass()
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    try
+                    {
+
+                        var data = con.Query($@"SELECT * FROM stockclass",
                            transaction: tran
                             );
 
@@ -298,7 +333,7 @@ namespace DeliveryRoomWatcher.Repositories
             }
 
         }
-        public ResponseModel getinventoryitem()
+        public ResponseModel getinventoryitem(InventoryModel.searchitems search)
         {
             using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
             {
@@ -308,8 +343,8 @@ namespace DeliveryRoomWatcher.Repositories
                     try
                     {
 
-                        var data = con.Query($@"SELECT inv.stockcode,inv.stockdesc,inv.packdesc,inv.unitdesc FROM invmaster inv WHERE inv.invitem='N'",
-                           transaction: tran
+                        var data = con.Query($@"SELECT inv.stockcode,inv.stockdesc,inv.packdesc,inv.unitdesc,  inv.averagecost  FROM invmaster inv JOIN stockclass stc ON inv.stocktag=stc.classcode WHERE  stc.classcode=@classcode AND inv.stockdesc LIKE CONCAT('%',@search,'%')",
+                           search,transaction: tran
                             );
 
                         return new ResponseModel
@@ -341,7 +376,7 @@ namespace DeliveryRoomWatcher.Repositories
                     try
                     {
 
-                        var data = con.Query($@"SELECT dp.deptcode,dp.`deptname`FROM department dp WHERE deptstock='Y'",
+                        var data = con.Query($@"SELECT dp.deptcode,dp.`deptname`FROM department dp WHERE deptactive='Y'",
                            transaction: tran
                             );
 
@@ -373,15 +408,15 @@ namespace DeliveryRoomWatcher.Repositories
                 {
                     try
                     {
-                     
+                        string reqno = con.QuerySingle<string>($@"SELECT CASE WHEN MAX(reqno)+1  IS NULL THEN 1 ELSE  MAX(reqno)+1  end reqno FROM requestsum", null, transaction: tran);
+                        requests.reqno = reqno;
                         string sql_insert_request_header = $@"INSERT INTO requestsum SET reqno=@reqno ,deptcode=@deptcode,sectioncode='',reqdate=NOW(),reqby=@reqby,apprbycode=NULL,
                         apprbyname=NULL,apprdate=NULL,todept=@todept,tosection='',issueno=NULL,reqtype='O',reqstatus='O',trantype='T',
                         headapprovebycode=NULL,headapprovebyname=NULL,headdateapprove=NULL,cancelledbycode=NULL,cancelledbyname=NULL,
                         datecancelled=NULL,reqremarks=@reqremarks,encodedby='pgh',dateencoded=NOW(),tsreference=NOW()";
                         int insert_user_information = con.Execute(sql_insert_request_header, requests, transaction: tran);
-                        string reqno = con.QuerySingle<string>($@"SELECT MAX(reqno) reqno FROM requestsum", null, transaction: tran);
-
-                        requests.reqno = reqno;
+                        
+                    
                         if (insert_user_information > 0)
                             {
                             int i = requests.lisrequesttdtls.Count;
@@ -390,7 +425,7 @@ namespace DeliveryRoomWatcher.Repositories
                                  {
                                   rdl.reqno = reqno;
                                   string sql_add_dtls = $@"INSERT INTO requestdtls SET reqno = @reqno,lineno = @lineno,linestatus = 'O',deptcode = @deptcode ,sectioncode = ''
-                                                                  ,todept = @todept,tosection = '',stockcode = @stockcode,stockdesc = @stockdesc,reqqty = @reqqty,unitdesc = @unitdesc,packed = 'N',
+                                                                  ,todept = @todept,tosection = '',stockcode = @stockcode,stockdesc = @stockdesc,reqqty = @reqqty,averagecost=@averagecost,costamount=@costamount,unitdesc = @unitdesc,packed = 'N',
                                                                   issueqty = NULL,itemtrantype = 'I',itemremarks = @itemremarks,docdate = NOW()";
 
                                         int insert_prdetails_result = con.Execute(sql_add_dtls, rdl, transaction: tran);
@@ -633,6 +668,66 @@ namespace DeliveryRoomWatcher.Repositories
             }
 
         }
+        public ResponseModel getPRPdf(int reqno)
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        string brand_logo = _company.hospitalLogo().data.ToString();
+                        string brand_name = con.QuerySingleOrDefault<string>("SELECT datval FROM defvalues WHERE remarks = 'hospname' limit 1;", null, transaction: tran);
+                        string brand_phone = con.QuerySingleOrDefault<string>("SELECT datval FROM defvalues WHERE remarks = 'SMSNUMBER' limit 1;", null, transaction: tran);
+                        string brand_address = con.QuerySingleOrDefault<string>("SELECT datval FROM defvalues WHERE remarks = 'hospadd' limit 1;", null, transaction: tran);
+                        string brand_email = "-";
+
+
+
+                        ListOfItems item_request = con.QuerySingle<ListOfItems>($@"
+                                        SELECT rs.*,(SELECT deptname FROM department WHERE deptcode=rs.deptcode) requested_from,(SELECT deptname FROM department WHERE deptcode=rs.todept) requested_to FROM `requestsum` rs  WHERE reqno=@reqno LIMIT 1; 
+                            ", new { reqno }, transaction: tran);
+
+
+                        //QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                        //QRCodeData qrCodeData = qrGenerator.CreateQrCode(hash_req_pk, QRCodeGenerator.ECCLevel.Q);
+                        //QRCode qrCode = new QRCode(qrCodeData);
+
+
+                        //var brand_logo_bitmap = UseFileParser.Base64StringToBitmap(brand_logo);
+                        //Bitmap qrCodeImage = qrCode.GetGraphic(35, Color.Black, Color.White, brand_logo_bitmap, 25);
+                        //string qr_with_brand_logo = UseFileParser.BitmapToBase64(qrCodeImage);
+
+
+                        item_request.requestitems = con.Query<ListofItemDetails>("select * from requestdtls where reqno=@reqno;",
+                             new { reqno }, transaction: tran).ToList();
+
+
+                        var pr_pdf = HtmltoPdf.PRHtmlPdf.geratePRPdf(brand_name, brand_logo, brand_address, brand_phone, brand_email, item_request);
+
+
+
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = Convert.ToBase64String(pr_pdf)
+                        };
+
+                    }
+                }
+
+            }
+            catch (Exception err)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = err.Message
+                };
+            }
+        }
         public ResponseModel getsinglerequestdtls(mdlSingleRequest singleRequest)
         {
             using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
@@ -643,7 +738,7 @@ namespace DeliveryRoomWatcher.Repositories
                     try
                     {
 
-                        var data = con.Query($@"SELECT stockcode,stockdesc,unitdesc,reqqty,issueqty,itemremarks FROM requestdtls where reqno=@reqno",
+                        var data = con.Query($@"SELECT stockcode,stockdesc,unitdesc,reqqty,averagecost,(reqqty*averagecost) costamount,issueqty,itemremarks  FROM requestdtls where reqno=@reqno",
                            singleRequest, transaction: tran);
 
 

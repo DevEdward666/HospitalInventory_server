@@ -43,6 +43,8 @@ namespace DeliveryRoomWatcher.Models
         public string stockcode { get; set; }
         public string stockdesc { get; set; }
         public string reqqty { get; set; }
+        public float averagecost { get; set; }
+        public float costamount { get; set; }
         public string unitdesc { get; set; }
         public string packed { get; set; }
         public string issueqty { get; set; }
