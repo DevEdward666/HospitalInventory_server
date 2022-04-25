@@ -1,4 +1,5 @@
-﻿using DeliveryRoomWatcher.Repositories;
+﻿using DeliveryRoomWatcher.Models.Common;
+using DeliveryRoomWatcher.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliveryRoomWatcher.Controllers
@@ -8,25 +9,34 @@ namespace DeliveryRoomWatcher.Controllers
     {
         CompanyRepository _company = new CompanyRepository();
 
-        [HttpPost]
-        [Route("api/company/companyname")]
-        public ActionResult companyName()
+
+        [HttpGet]
+        [Route("")]
+        public string defaultRoute()
         {
-            return Ok(_company.CompanyName());
+            return "running at 4020";
         }
 
         [HttpPost]
-        [Route("api/company/companylogo")]
-        public ActionResult companyLogo()
+        [Route("api/company/company-name")]
+        public ResponseModel CompanyName()
         {
-            return Ok(_company.CompanyLogo());
+            return _company.CompanyName();
+        }
+
+
+        [HttpPost]
+        [Route("api/company/company-logo")]
+        public ResponseModel CompanyLogo()
+        {
+            return _company.CompanyLogo();
         }
 
         [HttpPost]
-        [Route("api/company/companytagline")]
-        public ActionResult companyTagline()
+        [Route("api/company/company-tagline")]
+        public ResponseModel CompanyTagLine()
         {
-            return Ok(_company.CompanyTagLine());
+            return _company.CompanyTagLine();
         }
 
     }

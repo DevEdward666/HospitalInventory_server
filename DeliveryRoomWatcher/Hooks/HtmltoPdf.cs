@@ -13,7 +13,7 @@ namespace DeliveryRoomWatcher.Hooks
         public static class PRHtmlPdf
         {
 
-            public static Byte[] geratePRPdf(string brand_name, string brand_logo, string brand_address, string brand_phone, string brand_email, ListOfItems pr_reqest)
+            public static Byte[] geratePRPdf(string brand_name, string brand_logo, string brand_address, string brand_phone, string queueno, string counter, string countertype, DateTime date)
             {
 
                 Byte[] res = null;
@@ -22,8 +22,8 @@ namespace DeliveryRoomWatcher.Hooks
                 using (ms = new MemoryStream())
                 {
 
-                   SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
-                    converter.Options.PdfPageSize = PdfPageSize.A4;
+                    HtmlToPdf converter = new HtmlToPdf();
+                    converter.Options.PdfPageSize = PdfPageSize.A7;
                     converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
 
                     string css = @"<style>
@@ -83,14 +83,14 @@ namespace DeliveryRoomWatcher.Hooks
         }
 
         .header .brand-main-info .brand-logo {
-            height: 65px;
-            width: 65px;
+            height: 165px;
+            width: 165px;
             padding: 5px;
         }
 
         .header .brand-main-info .brand-name {
             font-weight: 900;
-            font-size: 20px;
+            font-size: 36px;
             padding: 5px;
             max-width: 100%;
         }
@@ -115,7 +115,7 @@ namespace DeliveryRoomWatcher.Hooks
 
         .document-title {
     font-weight: 500;
-            font-size: 16px;
+            font-size: 24px;
             padding: 5px;
             max-width: 100%;
 
@@ -162,6 +162,7 @@ namespace DeliveryRoomWatcher.Hooks
         .info-container {
             display: flex;
             flex-direction: row;
+            margin-top:150px
         }
 
         .req-info {
@@ -177,19 +178,33 @@ namespace DeliveryRoomWatcher.Hooks
 
         .info-title {
             font-weight: 900;
-            font-size: 18px;
+            font-size: 72px;
             opacity: .6;
             margin-top: 10px;
             margin-bottom: 5px;
+align-text:center;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+        }
+  .info-subtitle {
+            font-weight: 900;
+            font-size: 36px;
+            opacity: .6;
+            margin-top: 10px;
+            margin-bottom: 5px;
+align-text:center;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
         }
 
         .info-group {
             display: flex;
-            border-bottom: 1px dotted rgba(0, 0, 0, 1);
             padding: 7px 0;
             align-items: center;
             align-content: center;
-            justify-content: flex-start;
+            justify-content: center;
         }
 
         .info-group .label {
@@ -252,47 +267,7 @@ namespace DeliveryRoomWatcher.Hooks
         }
     </style>";
 
-                    string table_procedure = "";
 
-                    float total_price = 0;
-                    float unit_price = 0;
-
-                    foreach (var x in pr_reqest.requestitems)
-                    {
-
-                        unit_price = x.reqqty * x.averagecost;
-                        total_price += unit_price;
-                        table_procedure += $@"
-                                        <tr>
-                                            <td>
-                                                {x.lineno}.
-                                            </td>
-   <td>
-                                                {x.stockcode}
-                                            </td>
-
-<td>
-                                                {x.stockdesc}
-                                            </td>
-<td>
-                                                {x.unitdesc}
-                                            </td>
-<td>
-                                                {x.reqqty}
-                                            </td>
-<td>
-                                                {x.averagecost}
-                                            </td>
-                                            <td align='right'>{unit_price.ToString("0.00")}
-                                            </td>
-<td>
-                                             {x.itemremarks}
-                                            </td>
-                                        </tr>"
-                                            ;
-                    }
-
-                    pr_reqest.total_price = total_price;
 
 
                     PdfDocument doc = converter.ConvertHtmlString($@"
@@ -315,14 +290,7 @@ namespace DeliveryRoomWatcher.Hooks
 
  </div>
 
- </div>
-<br>
-<br>
-<br>
-  <div class='brand-sub-info'>
-   Stock Requisition Slip
- </div>
-            
+ </div>    
     </div>
 
    </div>
@@ -340,102 +308,40 @@ namespace DeliveryRoomWatcher.Hooks
     <div class='info-container'>
     <div class='req-info'>
             <div class='info-item  info-group'>
-                <div class='label'>
-                   Requesting To
+          
+                <div class='info-title'>
+                   {counter}
                 </div>
-                <div class='value'>
-                {pr_reqest.requested_to}
-                
+            </div>
+   <div class='info-item  info-group'>
+          
+                <div class='info-title'>
+                   {queueno}
+                </div>
+            </div>
+  <div class='info-item  info-group'>
+          
+                <div class='info-title'>
+                   {countertype}
                 </div>
             </div>
             <div class=' info-item  info-group'>
-                <div class='label'>
-                    Requesting Dept.
-                </div>
-                <div class='value'>
-                    {pr_reqest.requested_from}
+             
+                <div class='info-subtitle'>
+                     {String.Format("{0:MMMM/dd/yyyy}", date)}
                 </div>
             </div>
        
         </div> 
 
-        <div class='req-info'>
-            <div class='info-item  info-group'>
-                <div class='label'>
-                    Request No. :
-                </div>
-                <div class='value'>
-                   {pr_reqest.reqno}
-                </div>
-            </div>
-            <div class=' info-item  info-group'>
-                <div class='label'>
-                    Request Date
-                </div>
-                <div class='value'>
-                   {String.Format("{0:MMMM/dd/yyyy}", pr_reqest.reqdate)}
-                </div>
-            </div>
-       
-        </div>
+    
   
 
 
 
     </div>
 
-   <br>
-             <br>
-
-    <table>
-        <thead>
-            <tr>
-                <td>
-                    #
-                </td>
-  <td>
-                    Code 
-                </td>
-
-  <td>
-                    Description
-                </td>
-  <td>
-                    Unit 
-                </td>
-  <td>
-                    Qty
-                </td>
-                <td>
-                    Cost
-                </td>
-  <td>
-                    Amount
-                </td>
-  <td>
-                    Item Remarks
-                </td>
-            </tr>
-        </thead>
-        <tbody>
-            {table_procedure}
-        </tbody>
-    </table>
-
-    <div class='footer'>
- <div class='footer-info-group'>
-
-      <div class='label2'>Total Cost: &#8369;</div>
-             {total_price.ToString("0.00")}
-        </div>
-  </div>
-        <div class='footer-info-group'>
-    <div class='label'>Remarks </div>
-          {pr_reqest.reqremarks}
-        </div>
-        <br>
-             <br>
-
+    
     </div>
 </body>
 

@@ -140,3 +140,6 @@ D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Release\netcoreapp3
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.dll
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.pdb
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Release\netcoreapp3.1\DeliveryRoomWatcher.genruntimeconfig.cache
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\Select.Html.dep
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\bin\Release\netcoreapp3.1\Select.HtmlToPdf.dll
