@@ -10,6 +10,26 @@ namespace DeliveryRoomWatcher.Repositories
     public class CompanyRepository
     {
         DatabaseConfig dbConfig = new DatabaseConfig();
+        public ResponseModel CompanyName()
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    string hospitalName = con.QuerySingleOrDefault<string>(
+                        $@"SELECT `GetDefaultValue`('HOSPNAME') AS 'hosp_name'",
+                                null, transaction: tran);
+                    return new ResponseModel
+                    {
+                        success = true,
+                        data = hospitalName
+                    };
+                }
+            }
+
+        }
+
         public ResponseModel hospitalLogo()
         {
             try
@@ -49,53 +69,14 @@ namespace DeliveryRoomWatcher.Repositories
                 con.Open();
                 using (var tran = con.BeginTransaction())
                 {
-                    try { 
-                    byte[] bytes = con.QuerySingle<byte[]>(
-                        $@"SELECT hosplogo AS 'logo' FROM hospitallogo WHERE hospcode = GetDefaultValues('hospinitial')",
+                    byte[] bytes = con.QuerySingleOrDefault<byte[]>(
+                        $@"SELECT hosplogo AS 'logo' FROM hospitallogo WHERE hospcode = GetDefaultValue('hospinitial')",
                                 null, transaction: tran);
                     return new ResponseModel
                     {
                         success = true,
                         data = "data:image/jpg;base64," + Convert.ToBase64String(bytes)
                     };
-                    }
-                    catch (Exception e)
-                    {
-                        return new ResponseModel
-                        {
-                            success = false,
-                            message = $@"External server error. {e.Message.ToString()}",
-                        };
-                    }
-                }
-            }
-        }
-
-        public ResponseModel CompanyName()
-        {
-            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
-            {
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                {
-                    try {
-                    string hospitalName = con.QuerySingle<string>(
-                        $@"SELECT `GetDefaultValues`('HOSPNAME') AS 'hosp_name'",
-                                null, transaction: tran);
-                    return new ResponseModel
-                    {
-                        success = true,
-                        data = hospitalName
-                    };
-                    }
-                    catch (Exception e)
-                    {
-                        return new ResponseModel
-                        {
-                            success = false,
-                            message = $@"External server error. {e.Message.ToString()}",
-                        };
-                    }
                 }
             }
         }
@@ -107,11 +88,7 @@ namespace DeliveryRoomWatcher.Repositories
                 con.Open();
                 using (var tran = con.BeginTransaction())
                 {
-                    try
-                    {
-
-                    
-                    string tagLine = con.QuerySingle<string>(
+                    string tagLine = con.QuerySingleOrDefault<string>(
                         $@"SELECT `GetDefaultValue`('HOSPITALTAGLINE') AS 'hosp_tagline'",
                                 null, transaction: tran);
                     return new ResponseModel
@@ -119,17 +96,9 @@ namespace DeliveryRoomWatcher.Repositories
                         success = true,
                         data = tagLine
                     };
-                    }
-                    catch (Exception e)
-                    {
-                        return new ResponseModel
-                        {
-                            success = false,
-                            message = $@"External server error. {e.Message.ToString()}",
-                        };
-                    }
                 }
             }
+
         }
     }
 }

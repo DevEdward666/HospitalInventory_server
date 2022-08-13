@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Hospital\\HospitalInventory_server\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj": {}
+    "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj": {}
   },
   "projects": {
-    "D:\\Hospital\\HospitalInventory_server\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj": {
+    "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Hospital\\HospitalInventory_server\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
+        "projectUniqueName": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
         "projectName": "DeliveryRoomWatcher",
-        "projectPath": "D:\\Hospital\\HospitalInventory_server\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
+        "projectPath": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
         "packagesPath": "C:\\Users\\TUO-Edward\\.nuget\\packages\\",
-        "outputPath": "D:\\Hospital\\HospitalInventory_server\\DeliveryRoomWatcher\\obj\\",
+        "outputPath": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\TUO-Edward\\AppData\\Roaming\\NuGet\\NuGet.Config",

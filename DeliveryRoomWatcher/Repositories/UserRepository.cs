@@ -3,11 +3,15 @@ using DeliveryRoomWatcher.Config;
 using DeliveryRoomWatcher.Models.Common;
 using DeliveryRoomWatcher.Models.User;
 using DeliveryRoomWatcher.Parameters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using QueueCore.Models;
+using QueueCore.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace DeliveryRoomWatcher.Repositories
 {
@@ -22,7 +26,10 @@ namespace DeliveryRoomWatcher.Repositories
                 con.Open();
                 using (var tran = con.BeginTransaction())
                 {
-                        var user_credentials = con.Query<UserModel>($@"SELECT u.username, u.password,CONCAT(emp.`lastname`,',',emp.firstname) AS empname,emp.deptcode,dp.deptname  FROM usermaster u  JOIN userpermission up ON up.`username`=u.`username` JOIN usermodule um ON um.`modid`=up.`modid` JOIN empmast emp ON emp.`idno`=u.`empidno` JOIN department dp ON dp.deptcode = emp.deptcode  WHERE u.username = '@username'  AND AES_DECRYPT(u.password, u.username) = '@password' AND up.`logid`='login' AND um.`modid`='info'", cred, transaction: tran).ToList();
+                        var user_credentials = con.Query<UserModel>($@"SELECT u.`username`,TRIM(p.`modid`) AS 'modid' FROM `userpermission` p
+                                JOIN `usermaster` u ON u.`username` = p.`username`  
+                                WHERE p.`modid` = 'cash' AND p.logid = 'login'  OR p.`modid` = 'admin'  AND p.logid = 'login' AND AES_ENCRYPT(@password,@username) = u.`password`
+                                GROUP BY p.modid LIMIT 1", cred, transaction: tran).ToList();
 
                         return user_credentials;
                       
@@ -142,41 +149,41 @@ namespace DeliveryRoomWatcher.Repositories
             }
         }
      
-        public ResponseModel getUserInfo(PGetUsername username)
-        {
-            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
-            {
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                {
-                    try
-                    {
+        //public ResponseModel getUserInfo(PGetUsername username)
+        //{
+        //    using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+        //    {
+        //        con.Open();
+        //        using (var tran = con.BeginTransaction())
+        //        {
+        //            try
+        //            {
     
-                        var data = con.QuerySingle(
-                                        $@"SELECT u.username,CONCAT(emp.`lastname`,',',emp.firstname) AS empname,emp.deptcode,dp.deptname FROM usermaster u  JOIN userpermission up ON up.`username`=u.`username` JOIN usermodule um ON um.`modid`=up.`modid` JOIN empmast emp ON emp.`idno`=u.`empidno` JOIN department dp ON dp.deptcode = emp.deptcode  where u.username = @username limit 1
-                                        ",
-                          username, transaction: tran
-                            );
+        //                var data = con.QuerySingle(
+        //                                $@"SELECT u.username,CONCAT(emp.`lastname`,',',emp.firstname) AS empname,emp.deptcode,dp.deptname FROM usermaster u  JOIN userpermission up ON up.`username`=u.`username` JOIN usermodule um ON um.`modid`=up.`modid` JOIN empmast emp ON emp.`idno`=u.`empidno` JOIN department dp ON dp.deptcode = emp.deptcode  where u.username = @username limit 1
+        //                                ",
+        //                  username, transaction: tran
+        //                    );
 
-                        return new ResponseModel
-                        {
-                            success = true,
-                            data = data
-                        };
-                    }
-                    catch (Exception e)
-                    {
-                        return new ResponseModel
-                        {
-                            success = false,
-                            message = $@"External server error. {e.Message.ToString()}",
-                        };
-                    }
+        //                return new ResponseModel
+        //                {
+        //                    success = true,
+        //                    data = data
+        //                };
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                return new ResponseModel
+        //                {
+        //                    success = false,
+        //                    message = $@"External server error. {e.Message.ToString()}",
+        //                };
+        //            }
 
-                }
-            }
+        //        }
+        //    }
 
-        }
+        //}
         public ResponseModel getUserPerrmission(PGetUsername username)
         {
             using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
@@ -279,6 +286,211 @@ namespace DeliveryRoomWatcher.Repositories
             }
 
         }
-       
+        public ResponseModel getUserInfo(PGetUsername username)
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    try
+                    {
+                        //string username = ((ClaimsIdentity)HttpContext.Current.User.Identity).Name;
+
+                        var data = con.QuerySingle("SELECT um.username,um.`empname`,u.accnt_type,u.redirectto,u.type FROM usermaster um JOIN queue_usermaster u ON u.username=um.username  WHERE um.`username`=@username",
+                            username, transaction: tran
+                            );
+
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
+
+                }
+            }
+
+        }
+      
+        public ResponseModel getselectusers()
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    try
+                    {
+                        var data = con.Query($@"SELECT username,empname FROM usermaster WHERE username NOT IN (SELECT username FROM queue_usermaster)",
+                           null, transaction: tran
+                            );
+
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
+
+                }
+            }
+
+        }
+        public ResponseModel gettableusers()
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+
+
+                    try
+                    {
+                        var data = con.Query($@"SELECT fullname,username,accnt_type,redirectto,type FROM queue_usermaster",
+                           null, transaction: tran
+                            );
+
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
+
+                }
+            }
+
+        }
+        public ResponseModel insertqueueuser(Users.gettableusers insertusers)
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    string query = $@"SELECT empname FROM usermaster WHERE username=@username";
+                    try
+                    {
+                        string empname = con.QuerySingle<string>(query, insertusers, transaction: tran);
+                        if (empname != null)
+                        {
+
+                            int isQueue_UserInserted = con.Execute($@"insert into queue_usermaster (fullname,username,accnt_type,redirectto,type) values('{empname}',@username,@accnt_type,@redirectto,@type)",
+                                                  insertusers, transaction: tran);
+                            if (isQueue_UserInserted == 1)
+                            {
+
+                                tran.Commit();
+                                return new ResponseModel
+                                {
+                                    success = true,
+                                    message = "Success! The new user has been added successfully"
+                                };
+                            }
+                            else
+                            {
+                                return new ResponseModel
+                                {
+                                    success = false,
+                                    message = "Error! No rows affected while inserting the new record."
+                                };
+                            }
+                        }
+                        else
+                        {
+                            return new ResponseModel
+                            {
+                                success = false,
+                                message = "Error! No rows affected while inserting the new record."
+                            };
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
+
+                }
+            }
+
+        }
+        public ResponseModel updateuser(Users.gettableusers updateusers)
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    try
+                    {
+                        int isQueue_UserInserted = con.Execute($@"update queue_usermaster set fullname=@fullname,accnt_type=@accnt_type,redirectto=@redirectto,type=@type  where username=@username",
+                                              updateusers, transaction: tran);
+                        if (isQueue_UserInserted == 1)
+                        {
+
+                            tran.Commit();
+                            return new ResponseModel
+                            {
+                                success = true,
+                                message = "Success! The new user has been updated successfully"
+                            };
+                        }
+                        else
+                        {
+                            return new ResponseModel
+                            {
+                                success = false,
+                                message = "Error! No rows affected while inserting the new record."
+                            };
+                        }
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = $@"External server error. {e.Message.ToString()}",
+                        };
+                    }
+
+                }
+            }
+
+        }
+
+
     }
 }
