@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj": {}
+    "D:\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj": {}
   },
   "projects": {
-    "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj": {
+    "D:\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj",
+        "projectUniqueName": "D:\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj",
         "projectName": "QueueCore",
-        "projectPath": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj",
+        "projectPath": "D:\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj",
         "packagesPath": "C:\\Users\\TUO-Edward\\.nuget\\packages\\",
-        "outputPath": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\obj\\",
+        "outputPath": "D:\\QueueCore\\DeliveryRoomWatcher\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\TUO-Edward\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -21,7 +21,6 @@
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -103,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

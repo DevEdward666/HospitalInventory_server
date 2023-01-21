@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "VMEtvKaeN8WEoQPll9p40HqbjK8AdSHediAR5XdQCU4XLK7nM8OJ4A/VApqwIu03ipz96AHdI07CfkbXB1mRUQ==",
+  "dgSpecHash": "xEKheLuwO+4W2kdIxPyeWXWBc3sFH6hjL2r0dcf6ueBeRur5RzmdQPWXs3T6ngu8pJoHJlxyowGODBtJzwjw4Q==",
   "success": true,
-  "projectFilePath": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj",
+  "projectFilePath": "D:\\QueueCore\\DeliveryRoomWatcher\\QueueCore.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\TUO-Edward\\.nuget\\packages\\bouncycastle.netcore\\1.8.3\\bouncycastle.netcore.1.8.3.nupkg.sha512",
     "C:\\Users\\TUO-Edward\\.nuget\\packages\\dapper\\2.0.78\\dapper.2.0.78.nupkg.sha512",
