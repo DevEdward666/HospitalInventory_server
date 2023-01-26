@@ -35,7 +35,7 @@ namespace QueueCore.Models
         {
             public int lobbyno { get; set; }
             public string countername { get; set; }
-            public int counterno { get; set; }
+            public string counterno { get; set; }
         }
         public class updatephonenumber
         {
