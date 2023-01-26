@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/QueueCore",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:63465",
       "sslPort": 44345
@@ -23,8 +27,7 @@
       "launchUrl": "api/start",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
-      },
-      "applicationUrl": "http://localhost:3020"
+      }
     }
   }
 }

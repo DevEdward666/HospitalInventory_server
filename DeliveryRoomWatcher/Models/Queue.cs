@@ -134,6 +134,7 @@ namespace QueueCore.Models
         {
      
             public int lobbyno { get; set; }
+            public string lobbyName { get; set; }
         }
         public class generatenumber
         {

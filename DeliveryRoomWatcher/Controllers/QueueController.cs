@@ -82,6 +82,12 @@ namespace QueueCore.Controllers
         public ActionResult generatenumber(Queue.generatecounternumber cntr)
         {
             return Ok(_queue.generatenumber(cntr));
+        }      
+        [HttpPost]
+        [Route("api/queue/generatenumberwithoutpdf")]
+        public ActionResult generatenumberwithoutpdf(Queue.generatecounternumber cntr)
+        {
+            return Ok(_queue.generatenumberwithoutpdf(cntr));
         }
         [HttpPost]
         [Route("api/queue/generatenumberkiosk")]

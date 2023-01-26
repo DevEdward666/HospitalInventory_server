@@ -175,13 +175,26 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT distinct MAX(q.queueno) queueno,q.countername,ql.`countername` AS counter,ql.`docdate` FROM queue q LEFT JOIN queue_log ql ON q.queueno = ql.`queueno` WHERE q.queueno IN (SELECT q.queueno FROM queue q WHERE DATE_FORMAT(q.docdate, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d') AND ql.counter IN (SELECT ld.`countername` FROM lobbyheader lh JOIN lobbydtls ld ON lh.`lobbyno`=ld.`lobbyno`WHERE lh.`lobbyno` = @lobbyno) GROUP BY q.countername) GROUP BY q.countername,ql.`countername`  ",
-                                                 counterlist, transaction: tran);
-                        return new ResponseModel
+                        if (counterlist.lobbyName == "ALL")
                         {
-                            success = true,
-                            data = data
-                        };
+                            var data = con.Query($@"SELECT DISTINCT MAX(q.queueno) queueno,q.countername,ql.`countername` AS counter,ql.`docdate` FROM queue q LEFT JOIN queue_log ql ON q.queueno = ql.`queueno` WHERE q.queueno IN (SELECT q.queueno FROM queue q WHERE DATE_FORMAT(q.docdate, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d') AND ql.`countername` IS NOT NULL GROUP BY q.countername) GROUP BY q.countername,ql.`countername` ",
+                                                counterlist, transaction: tran);
+                            return new ResponseModel
+                            {
+                                success = true,
+                                data = data
+                            };
+                        }
+                        else
+                        {
+                            var data = con.Query($@"SELECT distinct MAX(q.queueno) queueno,q.countername,ql.`countername` AS counter,ql.`docdate` FROM queue q LEFT JOIN queue_log ql ON q.queueno = ql.`queueno` WHERE q.queueno IN (SELECT q.queueno FROM queue q WHERE DATE_FORMAT(q.docdate, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d') AND ql.counter IN (SELECT ld.`countername` FROM lobbyheader lh JOIN lobbydtls ld ON lh.`lobbyno`=ld.`lobbyno`WHERE lh.`lobbyno` = @lobbyno) GROUP BY q.countername) GROUP BY q.countername,ql.`countername`  ",
+                                                                            counterlist, transaction: tran);
+                            return new ResponseModel
+                            {
+                                success = true,
+                                data = data
+                            };
+                        }
                     }
                 }
             }
@@ -718,7 +731,75 @@ namespace QueueCore.Repositories
             }
 
         }
+        public ResponseModel generatenumberwithoutpdf(Queue.generatecounternumber cntr)
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
 
+
+                    con.Open();
+
+
+                    using (var tran = con.BeginTransaction())
+                    {
+                        int i = 0;
+                        int x = 0;
+                        int isQueuegeneratednumberInserted = 0;
+                        List<String> queuenos = new List<String>();
+                        DateTime now = DateTime.Now;
+                        int hour = now.Hour;
+                        int minute = now.Minute;
+                        DateTime date = now.Date;
+                        string brand_logo = _company.hospitalLogo().data.ToString();
+                        string brand_name = con.QuerySingleOrDefault<string>("SELECT datval FROM defvalues WHERE remarks = 'hospname' limit 1;", null, transaction: tran);
+                        string brand_phone = con.QuerySingleOrDefault<string>("SELECT datval FROM defvalues WHERE remarks = 'SMSNUMBER' limit 1;", null, transaction: tran);
+                        string brand_address = con.QuerySingleOrDefault<string>("SELECT datval FROM defvalues WHERE remarks = 'hospadd' limit 1;", null, transaction: tran);
+                        int counter = int.Parse(cntr.counter);
+                        for (i = 0; i < counter; i++)
+                        {
+                            string query = $@"SELECT NextQueueNo(@generated_counter,@maxnumber) queueno";
+                            string nextQueueNo = con.QuerySingle<string>(query, cntr, transaction: tran);
+                            isQueuegeneratednumberInserted = con.Execute($@"insert into queue set queueno='{nextQueueNo}',countername=@generated_counter,countertype=@generated_countertype,phonenumber='+63',docdate=NOW(),status='Queue'",
+                                                     cntr, transaction: tran);
+                            queuenos.Add(nextQueueNo);
+                        }
+                        if (isQueuegeneratednumberInserted > 0)
+                        {
+
+                            tran.Commit();
+                            return new ResponseModel
+                            {
+                                success = true,
+                                message = "Successfully generated",
+
+                            };
+                        }
+                        else
+                        {
+
+                            tran.Rollback();
+                            return new ResponseModel
+                            {
+                                success = false,
+                                message = "Error! No rows affected while inserting the new record."
+                            };
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
         public ResponseModel addnewcounternumber(Queue.addnewcounternumber counter)
         {
             try
