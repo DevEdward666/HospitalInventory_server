@@ -35,6 +35,18 @@ namespace QueueCore.Controllers
             return Ok(_queue.waiting(waitings));
         }
         [HttpPost]
+        [Route("api/queue/reception_waitinglist")]
+        public ActionResult reception_waitinglist()
+        {
+            return Ok(_queue.Reception_Waiting());
+        }
+        [HttpPost]
+        [Route("api/queue/reception_lastqueueno")]
+        public ActionResult reception_lastqueueno()
+        {
+            return Ok(_queue.Reception_lastqueueno());
+        }
+        [HttpPost]
         [Route("api/queue/notification")]
         public async Task<IActionResult> SendMessage(mdlNotifications.NotificationPost notificationPost)
         {
@@ -106,6 +118,12 @@ namespace QueueCore.Controllers
         public ActionResult getqueuno(Queue.getqueues getqueuno)
         {
             return Ok(_queue.getqueuno(getqueuno));
+        }
+        [HttpPost]
+        [Route("api/queue/reception_getqueuno")]
+        public ActionResult reception_getqueuno()
+        {
+            return Ok(_queue.reception_getqueuno());
         }
         [HttpPost]
         [Route("api/queue/getcounterexist")]

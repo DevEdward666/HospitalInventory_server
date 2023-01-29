@@ -45,6 +45,36 @@ namespace QueueCore.Repositories
             }
 
         }
+        public ResponseModel Reception_Waiting()
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        var data = con.Query($@"SELECT * FROM queue WHERE STATUS='Queue'  AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s')",
+                                                 null, transaction: tran);
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
         public ResponseModel getqueuemaintable(Queue.queues queue)
         {
             try
@@ -220,6 +250,36 @@ namespace QueueCore.Repositories
                     {
                         var data = con.Query($@"SELECT  ql.queueno,q.countertype  FROM queue_log ql JOIN queue q ON ql.queueno=q.`queueno`   WHERE ql.countername=@countername AND ql.counter=@counter  ORDER BY ql.docdate DESC LIMIT 1 ",
                                                  counterlist, transaction: tran);
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
+        public ResponseModel Reception_lastqueueno()
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        var data = con.Query($@"SELECT  ql.queueno,q.countertype  FROM queue_log ql JOIN queue q ON ql.queueno=q.`queueno` ORDER BY ql.docdate DESC LIMIT 1 ",
+                                                 null, transaction: tran);
                         return new ResponseModel
                         {
                             success = true,
@@ -429,6 +489,36 @@ namespace QueueCore.Repositories
                     using (var tran = con.BeginTransaction())
                     {
                         var data = con.Query($@"SELECT countername,countertype from queue_main where countertype='Senior'",
+                                                 null, transaction: tran);
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
+        public ResponseModel reception_getqueuno()
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        var data = con.Query($@"SELECT queueno, countername FROM queue WHERE  STATUS = 'Queue' AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') LIMIT 1",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
