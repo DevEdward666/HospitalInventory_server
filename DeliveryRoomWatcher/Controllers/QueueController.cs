@@ -132,6 +132,12 @@ namespace QueueCore.Controllers
             return Ok(_queue.getcounterexist(getqueuno));
         }
         [HttpPost]
+        [Route("api/queue/getcounterexistandupdate")]
+        public ActionResult getcounterexistandupdate(Queue.updatequeues updatequeues)
+        {
+            return Ok(_queue.getcounterexistandupdate(updatequeues));
+        }
+        [HttpPost]
         [Route("api/queue/getcounters_table")]
         public ActionResult getcounters_table()
         {

@@ -578,7 +578,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT  countername,countertype from queue_main group by countername",
+                        var data = con.Query($@"SELECT  id as counterid,countername,countertype from queue_main group by countername",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -1196,6 +1196,60 @@ namespace QueueCore.Repositories
                         {
                             int isCounterInserted = con.Execute($@"insert into queue_main values(Trim(@countername),@countertype,NOW())",
                                                     getqueuno, transaction: tran);
+                            if (isCounterInserted == 1)
+                            {
+
+                                tran.Commit();
+                                return new ResponseModel
+                                {
+                                    success = true,
+                                    message = "Success! The new counter has been added successfully"
+                                };
+                            }
+                            else
+                            {
+                                return new ResponseModel
+                                {
+                                    success = false,
+                                    message = "Error! No rows affected while inserting the new record."
+                                };
+                            }
+
+                        }
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = "Error! No rows affected while inserting the new record."
+                        };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
+        public ResponseModel getcounterexistandupdate(Queue.updatequeues updatequeues)
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        string query = $@"SELECT countername,countertype from queue_main where countername=@countername and countertype=@countertype";
+                        var data = con.Query<string>(query, updatequeues, transaction: tran);
+                        if (data.Count() == 0)
+                        {
+                            int isCounterInserted = con.Execute($@"update queue_main set countername = Trim(@countername),countertype = @countertype,createddate = NOW() where id = @counterid",
+                                                    updatequeues, transaction: tran);
                             if (isCounterInserted == 1)
                             {
 
