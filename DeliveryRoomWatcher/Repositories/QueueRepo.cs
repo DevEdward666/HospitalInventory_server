@@ -45,6 +45,36 @@ namespace QueueCore.Repositories
             }
 
         }
+        public ResponseModel Reception_Waiting()
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        var data = con.Query($@"SELECT * FROM queue WHERE STATUS='Queue'  AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s')",
+                                                 null, transaction: tran);
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
         public ResponseModel getqueuemaintable(Queue.queues queue)
         {
             try
@@ -220,6 +250,36 @@ namespace QueueCore.Repositories
                     {
                         var data = con.Query($@"SELECT  ql.queueno,q.countertype  FROM queue_log ql JOIN queue q ON ql.queueno=q.`queueno`   WHERE ql.countername=@countername AND ql.counter=@counter  ORDER BY ql.docdate DESC LIMIT 1 ",
                                                  counterlist, transaction: tran);
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
+        public ResponseModel Reception_lastqueueno()
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        var data = con.Query($@"SELECT  ql.queueno,q.countertype  FROM queue_log ql JOIN queue q ON ql.queueno=q.`queueno` ORDER BY ql.docdate DESC LIMIT 1 ",
+                                                 null, transaction: tran);
                         return new ResponseModel
                         {
                             success = true,
@@ -449,6 +509,36 @@ namespace QueueCore.Repositories
             }
 
         }
+        public ResponseModel reception_getqueuno()
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        var data = con.Query($@"SELECT queueno, countername FROM queue WHERE  STATUS = 'Queue' AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') LIMIT 1",
+                                                 null, transaction: tran);
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = data
+                        };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
         public ResponseModel getqueuno(Queue.getqueues getqueuno)
         {
             try
@@ -488,7 +578,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT  countername,countertype from queue_main group by countername",
+                        var data = con.Query($@"SELECT  id as counterid,countername,countertype from queue_main group by countername",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -1106,6 +1196,60 @@ namespace QueueCore.Repositories
                         {
                             int isCounterInserted = con.Execute($@"insert into queue_main values(Trim(@countername),@countertype,NOW())",
                                                     getqueuno, transaction: tran);
+                            if (isCounterInserted == 1)
+                            {
+
+                                tran.Commit();
+                                return new ResponseModel
+                                {
+                                    success = true,
+                                    message = "Success! The new counter has been added successfully"
+                                };
+                            }
+                            else
+                            {
+                                return new ResponseModel
+                                {
+                                    success = false,
+                                    message = "Error! No rows affected while inserting the new record."
+                                };
+                            }
+
+                        }
+                        return new ResponseModel
+                        {
+                            success = false,
+                            message = "Error! No rows affected while inserting the new record."
+                        };
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = $@"External server error. {e.Message.ToString()}",
+                };
+            }
+
+        }
+        public ResponseModel getcounterexistandupdate(Queue.updatequeues updatequeues)
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        string query = $@"SELECT countername,countertype from queue_main where countername=@countername and countertype=@countertype";
+                        var data = con.Query<string>(query, updatequeues, transaction: tran);
+                        if (data.Count() == 0)
+                        {
+                            int isCounterInserted = con.Execute($@"update queue_main set countername = Trim(@countername),countertype = @countertype,createddate = NOW() where id = @counterid",
+                                                    updatequeues, transaction: tran);
                             if (isCounterInserted == 1)
                             {
 
