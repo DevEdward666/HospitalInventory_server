@@ -22,12 +22,15 @@ namespace QueueCore.Models
         {
             public string countertype { get; set; }
             public string countername { get; set; }
+            public string active { get; set; }
         }
         public class updatequeues
         {
+            public string prev_counter_name { get; set; }
             public int counterid { get; set; }
             public string countertype { get; set; }
             public string countername { get; set; }
+            public string active { get; set; }
         }
         public class addlobby
         {

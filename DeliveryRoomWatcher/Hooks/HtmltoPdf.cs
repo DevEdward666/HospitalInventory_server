@@ -23,21 +23,19 @@ namespace DeliveryRoomWatcher.Hooks
                 {
 
                     HtmlToPdf converter = new HtmlToPdf();
-                    converter.Options.PdfPageSize = PdfPageSize.A7;
+                    converter.Options.PdfPageSize = PdfPageSize.A6;
                     converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
 
                     string css = @"<style>
-        * {
-            letter-spacing: .3pt;
-            word-spacing: .3pt; 
-        }
+     
         body {
             display: flex;
-            align-content: flex-start;
+            align-content: flex-center;
             flex-direction: column;
             font-family: Arial;
             padding: 10px;
             font-size: 14px;
+            width:100%;
         }
 
         .header-container {
@@ -114,10 +112,11 @@ namespace DeliveryRoomWatcher.Hooks
         }
 
         .document-title {
-    font-weight: 500;
+            font-weight: 500;
             font-size: 24px;
             padding: 5px;
             max-width: 100%;
+            width:100%;
 
         }
 
@@ -162,12 +161,13 @@ namespace DeliveryRoomWatcher.Hooks
         .info-container {
             display: flex;
             flex-direction: row;
-            margin-top:150px
+            width:100%
         }
 
         .req-info {
             flex-grow: 1;
             margin-right: 20px;
+            width:100%;
         }
 
         .pay-info {
@@ -175,25 +175,46 @@ namespace DeliveryRoomWatcher.Hooks
             margin-left: 20px;
         }
 
-
+        .counter-name{
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-weight: 900;
+            font-size: 72px;
+            align-text:center;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+        }
         .info-title {
             font-weight: 900;
             font-size: 72px;
             opacity: .6;
             margin-top: 10px;
             margin-bottom: 5px;
-align-text:center;
+            align-text:center;
             align-items: center;
             align-content: center;
             justify-content: center;
         }
-  .info-subtitle {
+        .datetime {
             font-weight: 900;
             font-size: 36px;
             opacity: .6;
             margin-top: 10px;
             margin-bottom: 5px;
-align-text:center;
+            align-text:center;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+        }
+        .info-subtitle {
+            font-weight: 900;
+            font-size: 36px;
+            opacity: .6;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            justify-self:center;
+            align-text:center;
             align-items: center;
             align-content: center;
             justify-content: center;
@@ -285,53 +306,35 @@ align-text:center;
   <div class='brand-name'>
 {brand_name}
 <br>
-  <div class='document-title'>
-{brand_address}
+    <div class='document-title'>
+        {brand_address}
 
- </div>
-
- </div>    
+     </div>
+    </div>    
     </div>
-
    </div>
 
-  
-
-    <div class='request-info-ctnr'>
-        <div class='details'>
-        </div>
-     
-    </div>
 
 
-
-    <div class='info-container'>
-    <div class='req-info'>
+            <div class='info-container'>
+            <div class='req-info'>
             <div class='info-item  info-group'>
           
-                <div class='info-title'>
+                <div class='counter-name'>
                    {counter}
                 </div>
             </div>
-   <div class='info-item  info-group'>
+            <div class='info-item  info-group'>
           
                 <div class='info-title'>
                    {queueno}
                 </div>
             </div>
-  <div class='info-item  info-group'>
-          
-                <div class='info-title'>
-                   {countertype}
+        <div class='info-item  info-group'>
+                <div class='datetime'>
+                     {String.Format("{0:MMM-dd-yyyy hh:mm }", date)}
                 </div>
-            </div>
-            <div class=' info-item  info-group'>
-             
-                <div class='info-subtitle'>
-                     {String.Format("{0:MMMM/dd/yyyy}", date)}
-                </div>
-            </div>
-       
+         </div>
         </div> 
 
     
