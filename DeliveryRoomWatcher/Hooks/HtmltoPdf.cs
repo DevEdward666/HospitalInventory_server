@@ -23,7 +23,7 @@ namespace DeliveryRoomWatcher.Hooks
                 {
 
                     HtmlToPdf converter = new HtmlToPdf();
-                    converter.Options.PdfPageSize = PdfPageSize.A6;
+                    converter.Options.PdfPageSize = PdfPageSize.A7;
                     converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
 
                     string css = @"<style>
@@ -332,7 +332,7 @@ namespace DeliveryRoomWatcher.Hooks
             </div>
         <div class='info-item  info-group'>
                 <div class='datetime'>
-                     {String.Format("{0:MMM-dd-yyyy hh:mm }", date)}
+                     {String.Format("{0:MMM-dd-yyyy hh:mm tt}", date)}
                 </div>
          </div>
         </div> 

@@ -428,7 +428,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT countername,countertype from queue_main where countertype='Regular'",
+                        var data = con.Query($@"SELECT countername,countertype from queue_main where countertype='Regular' and active = '1'",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -578,7 +578,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT  id as counterid,countername,countertype from queue_main group by countername",
+                        var data = con.Query($@"SELECT  id as counterid,countername,countertype,active from queue_main group by countername",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -663,10 +663,22 @@ namespace QueueCore.Repositories
                             string query = $@"SELECT NextQueueNo(@generated_counter,'{getmaxnumber}') queueno";
 
                             string nextQueueNo = con.QuerySingleOrDefault<string>(query, cntr, transaction: tran);
-
+                            string Queueno = nextQueueNo.Substring(nextQueueNo.Length - 4);
+                            string formatQueueno = "";
+                            if (Int32.Parse(Queueno) <= 0009)
+                            {
+                                formatQueueno = Queueno.Substring(3);
+                            }
+                            else if (Int32.Parse(Queueno) <= 0099)
+                            {
+                                formatQueueno = Queueno.Substring(2);
+                            } else if(Int32.Parse(Queueno) <= 0999)
+                            {
+                                formatQueueno = Queueno.Substring(1);
+                            }
                             int isQueuegeneratednumberInserted = con.Execute($@"insert into queue set queueno='{nextQueueNo}',countername=@generated_counter,countertype=@generated_countertype,phonenumber='+63',docdate=NOW(),status='Queue'",
                                                      cntr, transaction: tran);
-                            var pr_pdf = HtmltoPdf.PRHtmlPdf.geratePRPdf(brand_name, brand_logo, brand_address, brand_phone, nextQueueNo, cntr.generated_counter, cntr.generated_countertype, date);
+                            var pr_pdf = HtmltoPdf.PRHtmlPdf.geratePRPdf(brand_name, brand_logo, brand_address, brand_phone, formatQueueno, cntr.generated_counter, cntr.generated_countertype, now);
 
 
 
@@ -907,7 +919,7 @@ namespace QueueCore.Repositories
                         var getmaxnumber = con.Query<string>(query, counter, transaction: tran);
                         if (getmaxnumber.Count() == 0)
                         {
-                            int insertqueuesetnumber = con.Execute($@"insert into queue_setnumber set Counter=@displayedto,Maxnumber=10",
+                            int insertqueuesetnumber = con.Execute($@"insert into queue_setnumber set Counter=@displayedto,Maxnumber=999",
                                                        counter, transaction: tran);
                             if (insertqueuesetnumber >= 1)
                             {
@@ -919,7 +931,7 @@ namespace QueueCore.Repositories
                                     var counterexist = con.Query<string>(query2, counter, transaction: tran);
                                     if (counterexist.Count() == 0)
                                     {
-                                        int iscounternumberInserted = con.Execute($@"insert into counters values(@counter_name,@displayedto,@type,CURDATE())",
+                                        int iscounternumberInserted = con.Execute($@"insert into counters set counter_name = @counter_name,displayedto = @displayedto,type=@type,docdate = CURDATE()",
                                                                  counter, transaction: tran);
                                         if (iscounternumberInserted == 1)
                                         {
@@ -1194,17 +1206,21 @@ namespace QueueCore.Repositories
                         var data = con.Query<string>(query, getqueuno, transaction: tran);
                         if (data.Count() == 0)
                         {
-                            int isCounterInserted = con.Execute($@"insert into queue_main values(Trim(@countername),@countertype,NOW())",
+                            int isCounterInserted = con.Execute($@"insert into queue_main set countername = Trim(@countername),countertype=@countertype,createddate=NOW(), active = @active",
                                                     getqueuno, transaction: tran);
                             if (isCounterInserted == 1)
                             {
-
-                                tran.Commit();
-                                return new ResponseModel
+                                int addSetNumber = con.Execute($@"insert into queue_setnumber set Counter = Trim(@countername),MaxNumber='999'",
+                                                   getqueuno, transaction: tran);
+                                if (addSetNumber == 1)
                                 {
-                                    success = true,
-                                    message = "Success! The new counter has been added successfully"
-                                };
+                                    tran.Commit();
+                                    return new ResponseModel
+                                    {
+                                        success = true,
+                                        message = "Success! The new counter has been added successfully"
+                                    };
+                                }
                             }
                             else
                             {
@@ -1244,21 +1260,30 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        string query = $@"SELECT countername,countertype from queue_main where countername=@countername and countertype=@countertype";
+                        string query = $@"SELECT countername,countertype from queue_main where id=@counterid";
                         var data = con.Query<string>(query, updatequeues, transaction: tran);
-                        if (data.Count() == 0)
+                        if (data.Count() > 0)
                         {
-                            int isCounterInserted = con.Execute($@"update queue_main set countername = Trim(@countername),countertype = @countertype,createddate = NOW() where id = @counterid",
+                            int isCounterInserted = con.Execute($@"update queue_main set countername = Trim(@countername),countertype = @countertype,createddate = NOW(), active = @active where id = @counterid",
                                                     updatequeues, transaction: tran);
-                            if (isCounterInserted == 1)
-                            {
-
-                                tran.Commit();
-                                return new ResponseModel
+                            if (isCounterInserted > 0)
+                            { 
+                                int updatecounter = con.Execute($@"update counters set displayedto=@countername  where displayedto=@prev_counter_name",
+                                                   updatequeues, transaction: tran);
+                                if (updatecounter > 0)
                                 {
-                                    success = true,
-                                    message = "Success! The new counter has been added successfully"
-                                };
+                                    int updatemaxnumber = con.Execute($@"update queue_setnumber set MaxNumber='999' ,Counter=@countername  where Counter=@prev_counter_name",
+                                                  updatequeues, transaction: tran);
+                                    if (updatemaxnumber > 0)
+                                    {
+                                        tran.Commit();
+                                        return new ResponseModel
+                                        {
+                                            success = true,
+                                            message = "Success! The new counter has been added successfully"
+                                        };
+                                    }
+                                }
                             }
                             else
                             {
