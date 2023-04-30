@@ -365,9 +365,6 @@ D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.csprojAssemblyReference.cache
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.AssemblyInfoInputs.cache
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.AssemblyInfo.cs
-D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.csproj.CoreCompileInputs.cache
-D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.MvcApplicationPartsAssemblyInfo.cs
-D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.MvcApplicationPartsAssemblyInfo.cache
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.RazorTargetAssemblyInfo.cache
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.csproj.CopyComplete
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\staticwebassets\DeliveryRoomWatcher.StaticWebAssets.Manifest.cache
@@ -375,4 +372,13 @@ D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.dll
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.pdb
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.genruntimeconfig.cache
+<<<<<<< HEAD
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\web.config
+=======
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\Select.Html.dep
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\Select.HtmlToPdf.dll
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.csproj.CoreCompileInputs.cache
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.MvcApplicationPartsAssemblyInfo.cs
+D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.MvcApplicationPartsAssemblyInfo.cache
+>>>>>>> de5074b4b71fc2b022e486759313e62bdf75e450

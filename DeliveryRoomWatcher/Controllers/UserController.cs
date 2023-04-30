@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using QueueCore.Models;
+using QueueCore.Parameters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -199,10 +201,40 @@ namespace DeliveryRoomWatcher.Controllers
           
             return Ok(_user.InserNewUser(adduser));
         }
-      
-     
+        
+        [HttpPost]
+        [Route("api/user/insertqueueuser")]
+        public ActionResult insertqueueuser(Users.gettableusers insertusers)
+        {
+          
+            return Ok(_user.insertqueueuser(insertusers));
+        }
 
-     
+        [HttpPost]
+        [Route("api/user/gettableusers")]
+        public ActionResult gettableusers()
+        {
+
+            return Ok(_user.gettableusers());
+        }   
+        [HttpPost]
+        [Route("api/user/getselectusers")]
+        public ActionResult getselectusers()
+        {
+
+            return Ok(_user.getselectusers());
+        }
+        [HttpGet]
+        [Route("api/start")]
+        public ActionResult start()
+        {
+          
+
+            return Ok("The server has started successfully");
+        }
+
+
+
 
         [Route("api/user/getimage")]
         [HttpPost]

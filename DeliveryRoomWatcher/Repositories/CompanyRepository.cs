@@ -10,26 +10,6 @@ namespace DeliveryRoomWatcher.Repositories
     public class CompanyRepository
     {
         DatabaseConfig dbConfig = new DatabaseConfig();
-
-        public ResponseModel CompanyLogo()
-        {
-            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
-            {
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                {
-                    byte[] bytes = con.QuerySingleOrDefault<byte[]>(
-                        $@"SELECT hosplogo AS 'logo' FROM hospitallogo WHERE hospcode = GetDefaultValue('hospinitial')",
-                                null, transaction: tran);
-                    return new ResponseModel
-                    {
-                        success = true,
-                        data = "data:image/jpg;base64," + Convert.ToBase64String(bytes)
-                    };
-                }
-            }
-        }
-
         public ResponseModel CompanyName()
         {
             using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
@@ -44,6 +24,58 @@ namespace DeliveryRoomWatcher.Repositories
                     {
                         success = true,
                         data = hospitalName
+                    };
+                }
+            }
+
+        }
+
+        public ResponseModel hospitalLogo()
+        {
+            try
+            {
+                using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+                {
+                    con.Open();
+                    using (var tran = con.BeginTransaction())
+                    {
+                        string logo = Convert.ToBase64String(con.QuerySingle<byte[]>($@"
+                                        SELECT hosplogo  FROM hospitallogo WHERE hospcode = GetDefaultValue('hospinitial')
+                                        "
+                                         , null, transaction: tran));
+                        return new ResponseModel
+                        {
+                            success = true,
+                            data = logo
+                        };
+                    }
+                }
+
+            }
+            catch (Exception err)
+            {
+
+                return new ResponseModel
+                {
+                    success = false,
+                    message = err.Message
+                };
+            }
+        }
+        public ResponseModel CompanyLogo()
+        {
+            using (var con = new MySqlConnection(DatabaseConfig.GetConnection()))
+            {
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                {
+                    byte[] bytes = con.QuerySingleOrDefault<byte[]>(
+                        $@"SELECT hosplogo AS 'logo' FROM hospitallogo WHERE hospcode = GetDefaultValue('hospinitial')",
+                                null, transaction: tran);
+                    return new ResponseModel
+                    {
+                        success = true,
+                        data = "data:image/jpg;base64," + Convert.ToBase64String(bytes)
                     };
                 }
             }
@@ -66,6 +98,7 @@ namespace DeliveryRoomWatcher.Repositories
                     };
                 }
             }
+
         }
     }
 }

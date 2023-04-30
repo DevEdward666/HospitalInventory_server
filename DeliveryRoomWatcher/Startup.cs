@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using QueueCore.Hubs;
 using System.IO;
 
 namespace DeliveryRoomWatcher
@@ -37,10 +38,12 @@ namespace DeliveryRoomWatcher
             services.AddCors();
             services.InstallServicesInAssembly(Configuration);
             services.AddSignalR();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -53,7 +56,6 @@ namespace DeliveryRoomWatcher
             app.UseCors(builder => builder
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .SetIsOriginAllowed(origin => true)
                   .AllowCredentials()
               );
 
@@ -87,15 +89,19 @@ namespace DeliveryRoomWatcher
                 RequestPath = "/Resources/Events"
 
             });
-            app.UseHttpsRedirection();
+     
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseWebSockets();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<MessageHub>("message");
-                endpoints.MapHub<NotifyHub>("notify");
+             
                 endpoints.MapControllers();
+                endpoints.MapHub<MessageHub>("api/message/message");
+                endpoints.MapHub<NotifyHub>("api/notif/notify");
+                endpoints.MapHub<NotifyMobileHub>("api/notifmobile/notifymobile");
             });
 
 

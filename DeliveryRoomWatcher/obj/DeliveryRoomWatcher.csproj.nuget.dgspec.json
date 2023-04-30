@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "E:\\HospitalInventory\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj": {}
   },
   "projects": {
@@ -12,6 +13,19 @@
         "projectPath": "E:\\HospitalInventory\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
         "packagesPath": "C:\\Users\\TUO-Edward\\.nuget\\packages\\",
         "outputPath": "E:\\HospitalInventory\\DeliveryRoomWatcher\\obj\\",
+=======
+    "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj": {}
+  },
+  "projects": {
+    "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
+        "projectName": "DeliveryRoomWatcher",
+        "projectPath": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
+        "packagesPath": "C:\\Users\\TUO-Edward\\.nuget\\packages\\",
+        "outputPath": "D:\\Hospital\\QueueCore\\DeliveryRoomWatcher\\obj\\",
+>>>>>>> de5074b4b71fc2b022e486759313e62bdf75e450
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\TUO-Edward\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -66,6 +80,14 @@
             "MySql.Data": {
               "target": "Package",
               "version": "[8.0.22, )"
+            },
+            "Select.HtmlToPdf": {
+              "target": "Package",
+              "version": "[21.1.0, )"
+            },
+            "Select.HtmlToPdf.NetCore": {
+              "target": "Package",
+              "version": "[21.1.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

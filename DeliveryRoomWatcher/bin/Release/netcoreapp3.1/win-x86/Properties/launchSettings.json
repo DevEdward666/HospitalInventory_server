@@ -4,8 +4,13 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
+<<<<<<< HEAD:DeliveryRoomWatcher/bin/Release/netcoreapp3.1/win-x86/Properties/launchSettings.json
       "applicationUrl": "http://localhost:63456",
       "sslPort": 44339
+=======
+      "applicationUrl": "http://localhost:63465",
+      "sslPort": 44345
+>>>>>>> de5074b4b71fc2b022e486759313e62bdf75e450:DeliveryRoomWatcher/bin/Release/netcoreapp3.1/Properties/launchSettings.json
     }
   },
   "profiles": {
@@ -23,8 +28,14 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:4000;https://localhost:5000",
       "environmentVariables": {
+<<<<<<< HEAD:DeliveryRoomWatcher/bin/Release/netcoreapp3.1/win-x86/Properties/launchSettings.json
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+=======
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "applicationUrl": "http://localhost:3020"
+>>>>>>> de5074b4b71fc2b022e486759313e62bdf75e450:DeliveryRoomWatcher/bin/Release/netcoreapp3.1/Properties/launchSettings.json
     }
   }
 }
