@@ -373,14 +373,14 @@ namespace DeliveryRoomWatcher.Repositories
                 {
                     try
                     {
-                     
+                        string reqno = con.QuerySingle<string>($@"SELECT CASE WHEN MAX(reqno)+1 IS NULL THEN 1 ELSE  MAX(reqno)+1 END reqno  FROM requestsum", null, transaction: tran);
+
                         string sql_insert_request_header = $@"INSERT INTO requestsum SET reqno=@reqno ,deptcode=@deptcode,sectioncode='',reqdate=NOW(),reqby=@reqby,apprbycode=NULL,
                         apprbyname=NULL,apprdate=NULL,todept=@todept,tosection='',issueno=NULL,reqtype='O',reqstatus='O',trantype='T',
                         headapprovebycode=NULL,headapprovebyname=NULL,headdateapprove=NULL,cancelledbycode=NULL,cancelledbyname=NULL,
                         datecancelled=NULL,reqremarks=@reqremarks,encodedby='pgh',dateencoded=NOW(),tsreference=NOW()";
                         int insert_user_information = con.Execute(sql_insert_request_header, requests, transaction: tran);
-                        string reqno = con.QuerySingle<string>($@"SELECT MAX(reqno) reqno FROM requestsum", null, transaction: tran);
-
+                     
                         requests.reqno = reqno;
                         if (insert_user_information > 0)
                             {

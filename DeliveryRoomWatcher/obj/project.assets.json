@@ -7649,11 +7649,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Hospital\\HospitalInventory_server\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
+      "projectUniqueName": "E:\\HospitalInventory\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
       "projectName": "DeliveryRoomWatcher",
-      "projectPath": "D:\\Hospital\\HospitalInventory_server\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
+      "projectPath": "E:\\HospitalInventory\\DeliveryRoomWatcher\\DeliveryRoomWatcher.csproj",
       "packagesPath": "C:\\Users\\TUO-Edward\\.nuget\\packages\\",
-      "outputPath": "D:\\Hospital\\HospitalInventory_server\\DeliveryRoomWatcher\\obj\\",
+      "outputPath": "E:\\HospitalInventory\\DeliveryRoomWatcher\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\TUO-Edward\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -7663,11 +7663,11 @@
         "netcoreapp3.1"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "projectReferences": {}
         }
       },
@@ -7679,6 +7679,7 @@
     },
     "frameworks": {
       "netcoreapp3.1": {
+        "targetAlias": "netcoreapp3.1",
         "dependencies": {
           "Dapper": {
             "target": "Package",
@@ -7731,7 +7732,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.406\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }

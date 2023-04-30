@@ -251,7 +251,6 @@ E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\DeliveryRoomWat
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\DeliveryRoomWatcher.deps.json
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\DeliveryRoomWatcher.runtimeconfig.json
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\DeliveryRoomWatcher.runtimeconfig.dev.json
-E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\DeliveryRoomWatcher.dll
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\DeliveryRoomWatcher.pdb
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\Dapper.dll
 E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\Google.Protobuf.dll
@@ -376,3 +375,4 @@ D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.dll
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.pdb
 D:\Hospital\HospitalInventory_server\DeliveryRoomWatcher\obj\Debug\netcoreapp3.1\DeliveryRoomWatcher.genruntimeconfig.cache
+E:\HospitalInventory\DeliveryRoomWatcher\bin\Debug\netcoreapp3.1\web.config
