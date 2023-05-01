@@ -54,7 +54,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT * FROM queue WHERE STATUS='Queue'  AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s')",
+                        var data = con.Query($@"SELECT * FROM queue WHERE STATUS='Queue' AND countername='RECEPTION'  AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m:%s') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') ASC",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -207,7 +207,7 @@ namespace QueueCore.Repositories
                     {
                         if (counterlist.lobbyName == "ALL")
                         {
-                            var data = con.Query($@"SELECT DISTINCT MAX(q.queueno) queueno,q.countername,ql.`countername` AS counter,ql.`docdate` FROM queue q LEFT JOIN queue_log ql ON q.queueno = ql.`queueno` WHERE q.queueno IN (SELECT q.queueno FROM queue q WHERE DATE_FORMAT(q.docdate, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d') AND ql.`countername` IS NOT NULL GROUP BY q.countername) GROUP BY q.countername,ql.`countername` ",
+                            var data = con.Query($@"SELECT DISTINCT MAX(ql.queueno) queueno,q.countername,ql.`countername` AS counter,ql.`docdate` FROM queue q LEFT JOIN queue_log ql  ON q.countername = ql.`counter`  WHERE q.queueno IN (SELECT q.queueno FROM queue q WHERE DATE_FORMAT(ql.docdate, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d') AND ql.`countername` IS NOT NULL GROUP BY q.countername) GROUP BY q.countername,ql.`countername`  ORDER BY ql.docdate DESC ",
                                                 counterlist, transaction: tran);
                             return new ResponseModel
                             {
@@ -248,7 +248,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT  ql.queueno,q.countertype  FROM queue_log ql JOIN queue q ON ql.queueno=q.`queueno`   WHERE ql.countername=@countername AND ql.counter=@counter  ORDER BY ql.docdate DESC LIMIT 1 ",
+                        var data = con.Query($@"SELECT  ql.counter,ql.queueno,q.countertype  FROM queue_log ql JOIN queue q ON ql.queueno=q.`queueno`   WHERE ql.countername=@countername AND ql.counter=@counter  ORDER BY ql.docdate DESC LIMIT 1 ",
                                                  counterlist, transaction: tran);
                         return new ResponseModel
                         {
@@ -278,7 +278,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT  ql.queueno,q.countertype  FROM queue_log ql JOIN queue q ON ql.queueno=q.`queueno` ORDER BY ql.docdate DESC LIMIT 1 ",
+                        var data = con.Query($@"SELECT  ql.counter,ql.queueno,q.countertype  FROM queue_log ql JOIN queue q ON ql.queueno=q.`queueno` WHERE ql.counter='RECEPTION' ORDER BY ql.docdate DESC LIMIT 1 ",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -428,7 +428,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT countername,countertype from queue_main where countertype='Regular' and active = '1'",
+                        var data = con.Query($@"SELECT (SELECT q.queueno FROM  queue q WHERE q.countername=qm.`countername`AND DATE(q.docdate) = CURDATE() ORDER BY q.docdate DESC LIMIT 1) AS queueno, countername,countertype FROM queue_main qm WHERE countertype='Regular' AND active = '1' ORDER BY qm.`countername` ASC",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -518,7 +518,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT queueno, countername FROM queue WHERE  STATUS = 'Queue' AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') LIMIT 1",
+                        var data = con.Query($@"SELECT queueno, countername FROM queue WHERE  STATUS = 'Queue' AND countername='RECEPTION' AND DATE_FORMAT(docdate, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d') LIMIT 1",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -552,7 +552,7 @@ namespace QueueCore.Repositories
                                                  getqueuno, transaction: tran);
                         return new ResponseModel
                         {
-                            success = true,
+                            success = true, 
                             data = data
                         };
                     }
@@ -1270,7 +1270,7 @@ namespace QueueCore.Repositories
                             { 
                                 int updatecounter = con.Execute($@"update counters set displayedto=@countername  where displayedto=@prev_counter_name",
                                                    updatequeues, transaction: tran);
-                                if (updatecounter > 0)
+                                if (updatecounter >= 0)
                                 {
                                     int updatemaxnumber = con.Execute($@"update queue_setnumber set MaxNumber='999' ,Counter=@countername  where Counter=@prev_counter_name",
                                                   updatequeues, transaction: tran);

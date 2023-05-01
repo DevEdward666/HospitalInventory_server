@@ -63,7 +63,7 @@ namespace DeliveryRoomWatcher.Providers
                 _jwtTokenConfig.Issuer,
                 shouldAddAudienceClaim ? _jwtTokenConfig.Audience : string.Empty,
                 claims,
-                expires: now.AddMinutes(_jwtTokenConfig.AccessTokenExpiration),
+                expires: now.AddYears(_jwtTokenConfig.AccessTokenExpiration),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(_secret), SecurityAlgorithms.HmacSha256Signature));
             var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
@@ -71,7 +71,7 @@ namespace DeliveryRoomWatcher.Providers
             {
                 UserName = username,
                 TokenString = GenerateRefreshTokenString(),
-                ExpireAt = now.AddMinutes(_jwtTokenConfig.RefreshTokenExpiration)
+                ExpireAt = now.AddYears(_jwtTokenConfig.RefreshTokenExpiration)
             };
             _usersRefreshTokens.AddOrUpdate(refreshToken.TokenString, refreshToken, (s, t) => refreshToken);
 

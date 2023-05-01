@@ -18,7 +18,6 @@ namespace QueueCore.Controllers
 {
 
     [ApiController]
-    [Authorize]
     public class QueueController : ControllerBase
     {
       
