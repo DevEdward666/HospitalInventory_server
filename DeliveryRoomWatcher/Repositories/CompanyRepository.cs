@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using DeliveryRoomWatcher.Config;
 using DeliveryRoomWatcher.Models.Common;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System;
 
 namespace DeliveryRoomWatcher.Repositories

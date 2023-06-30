@@ -5,7 +5,7 @@ using DeliveryRoomWatcher.Models.User;
 using DeliveryRoomWatcher.Parameters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QueueCore.Models;
 using QueueCore.Parameters;
 using System;

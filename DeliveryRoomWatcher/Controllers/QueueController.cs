@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DeliveryRoomWatcher.Hubs;
 using DeliveryRoomWatcher.Models;
+using DeliveryRoomWatcher.Models.Common;
 using DeliveryRoomWatcher.Parameters;
 using DeliveryRoomWatcher.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,8 @@ namespace QueueCore.Controllers
     [ApiController]
     public class QueueController : ControllerBase
     {
-      
+        List<Dictionary<string, object>> reception_waitingList = QueueRepo.WaitingData;
+        Dictionary<string, string> lastQueueNo = QueueRepo.LastQueueNumber;
         QueueRepo _queue = new QueueRepo();
         protected readonly IHubContext<NotifyHub> _notifyhub;
         public QueueController([NotNull] IHubContext<NotifyHub> notifyhub)
@@ -37,13 +39,13 @@ namespace QueueCore.Controllers
         [Route("api/queue/reception_waitinglist")]
         public ActionResult reception_waitinglist()
         {
-            return Ok(_queue.Reception_Waiting());
+            return Ok(new ResponseModel { data = reception_waitingList });
         }
         [HttpPost]
         [Route("api/queue/reception_lastqueueno")]
         public ActionResult reception_lastqueueno()
         {
-            return Ok(_queue.Reception_lastqueueno());
+            return Ok(new ResponseModel { data = lastQueueNo });
         }
         [HttpPost]
         [Route("api/queue/notification")]
@@ -104,7 +106,9 @@ namespace QueueCore.Controllers
         [Route("api/queue/generatenumberkiosk")]
         public ActionResult generatenumberkiosk(Queue.generatecounternumber cntr)
         {
-            return Ok(_queue.generatenumberkiosk(cntr));
+            var generate = _queue.generatenumberkiosk(cntr);
+            _queue.Reception_Waiting();
+            return Ok(generate);
         }
         [HttpPost]
         [Route("api/queue/getqueuemaintable")]

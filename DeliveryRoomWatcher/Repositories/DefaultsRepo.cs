@@ -3,7 +3,7 @@ using DeliveryRoomWatcher.Config;
 using DeliveryRoomWatcher.Models;
 using DeliveryRoomWatcher.Models.Common;
 using DeliveryRoomWatcher.Parameters;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Linq;

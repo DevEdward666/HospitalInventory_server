@@ -3,7 +3,7 @@ using DeliveryRoomWatcher.Config;
 using DeliveryRoomWatcher.Hooks;
 using DeliveryRoomWatcher.Models.Common;
 using DeliveryRoomWatcher.Repositories;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QueueCore.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,8 @@ namespace QueueCore.Repositories
     public class QueueRepo
     {
         CompanyRepository _company = new CompanyRepository();
+        public static List<Dictionary<string, object>> WaitingData { get; set; }
+        public static Dictionary<string,string> LastQueueNumber { get; set; }
         public ResponseModel waiting(Queue.waiting waitings)
         {
             try
@@ -54,8 +56,21 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT * FROM queue WHERE STATUS='Queue' AND countername='RECEPTION'  AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m:%s') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') ASC",
-                                                 null, transaction: tran);
+                        //var data = con.Query($@"SELECT * FROM queue WHERE STATUS='Queue' AND countername='RECEPTION'  AND DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') >= DATE_FORMAT(CURDATE(), '%Y-%m-%d %H:%m:%s') ORDER BY DATE_FORMAT(docdate, '%Y-%m-%d %H:%m:%s') ASC",
+                        //                         null, transaction: tran);
+                        var data = con.Query($@"SELECT * FROM queue WHERE STATUS='Queue' limit 10",
+                                                null, transaction: tran);
+
+                        WaitingData = new List<Dictionary<string, object>>();
+                        foreach (var row in data)
+                        {
+                            var dataDict = new Dictionary<string, object>();
+                            foreach (var column in row)
+                            {
+                                dataDict[column.Key] = column.Value;
+                            }
+                            WaitingData.Add(dataDict);
+                        }
                         return new ResponseModel
                         {
                             success = true,
@@ -518,7 +533,7 @@ namespace QueueCore.Repositories
                     con.Open();
                     using (var tran = con.BeginTransaction())
                     {
-                        var data = con.Query($@"SELECT queueno, countername FROM queue WHERE  STATUS = 'Queue' AND countername='RECEPTION' AND DATE_FORMAT(docdate, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d') LIMIT 1",
+                        var data = con.QuerySingle($@"SELECT queueno, countername FROM queue WHERE  STATUS = 'Queue' AND countername='RECEPTION' AND DATE_FORMAT(docdate, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d') LIMIT 1",
                                                  null, transaction: tran);
                         return new ResponseModel
                         {
@@ -1478,6 +1493,12 @@ namespace QueueCore.Repositories
 
                         if (isQueueUpdated >= 1)
                         {
+                            LastQueueNumber = new Dictionary<string, string>();
+
+                            LastQueueNumber.Add("countername", UpdateQueue.countername.ToString());
+                            LastQueueNumber.Add("queueno", UpdateQueue.queueno.ToString());
+                            LastQueueNumber.Add("counter", UpdateQueue.counter.ToString());
+
                             int isQueueLogInserted = con.Execute($@"insert into queue_log values(@queueno,@counter ,@countername ,NOW(),'SERVED')",
                                               UpdateQueue, transaction: tran);
                             if (isQueueLogInserted == 1)
